@@ -66,7 +66,7 @@ function Refreshdata() {
             $('#divGlobalReportHTML4').html("<h5 style='color:red;'>正在刷新...</h5>");
         },
         success: function (msg) {
-            $('#divGlobalReportHTML4').html("<h5 style='color:red;'>正在刷新数据...</h5>");
+           
             doReportCall();
             doSummaryCall();
         },
