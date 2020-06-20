@@ -156,7 +156,7 @@ function createChart(strCharts) {
             height: 400
         },
         title: {
-            text: "各组织工单数量图(柱状图)"
+            text: "各组织工单数量图(线状图)"
         },
         legend: {
             visible: true,
@@ -164,7 +164,7 @@ function createChart(strCharts) {
         },
         seriesDefaults: {
             type: "line",
-            stack: true,                    // 加上stack:true,则多个柱状图会叠在一列上，否则显示为多列
+            stack: false,                    // 加上stack:true,则多个柱状图会叠在一列上，否则显示为多列
             labels: {
                 visible: true,              // 设置柱状图上的数字是否显示
                 background: "transparent",
@@ -213,7 +213,7 @@ function createChart(strCharts) {
                 format: ""              // 设置纵坐标轴数据的前后缀，比如format: "{0}%"，format: "${0}"
             },
             line: {
-                visible: false
+                visible: true
             },
 
             axisCrossingValue: 0        // 纵坐标轴的基线设置，大于该数字的柱状图向上走，小于该数字的柱状图向下走
