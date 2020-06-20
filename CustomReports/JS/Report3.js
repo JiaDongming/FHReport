@@ -31,7 +31,7 @@ function doReportCall() {
 
     $.ajax({
         type: "POST",
-        url: "Report3.aspx/RefreshGlobalReport3",
+        url: "Report3.aspx/GetTopTitle",
         data: params,
         contentType: "application/json; charset=utf-8",
         beforeSend: function (XMLHttpRequest) {

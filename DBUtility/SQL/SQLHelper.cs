@@ -13,7 +13,8 @@ namespace DBUtility
    public  class SQLHelper
     {
         //private static string connString = ConfigurationManager.ConnectionStrings["DevSuiteConnection"].ToString();
-         private static string connString = ConfigurationManager.ConnectionStrings["InternalConnection"].ToString();
+        //private static string connString = ConfigurationManager.ConnectionStrings["InternalConnection"].ToString();
+        private static string connString = ConfigurationManager.ConnectionStrings["LocalConnection"].ToString();
         //增删改
         public static int Update(string sql,SqlParameter[] param)
         {

@@ -46,6 +46,7 @@
     <Compile Include="ExtendMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleCache.cs" />
+    <Compile Include="TimeTranslate.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

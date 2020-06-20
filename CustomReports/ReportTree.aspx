@@ -102,6 +102,8 @@
                 <li itemId="120" <%=IfShowReport(-1, 120) ? "" : "style=\"display:none;\""%>><a>20-Column_Line报表</a></li>
                 <li itemId="121" <%=IfShowReport(-1, 121) ? "" : "style=\"display:none;\""%>><a>21-销售漏斗(Funnel Chart)</a></li>
                 <li itemId="122" <%=IfShowReport(-1, 122) ? "" : "style=\"display:none;\""%>><a>烽火工时统计</a></li>
+                <li itemId="123" <%=IfShowReport(-1, 123) ? "" : "style=\"display:none;\""%>><a>大屏报表</a></li>
+                <li itemId="124" <%=IfShowReport(-1, 124) ? "" : "style=\"display:none;\""%>><a>申能报表</a></li>
           </ul>
       </div>
 </div>

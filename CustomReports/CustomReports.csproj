@@ -25,6 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -125,6 +126,42 @@
     <Content Include="CSS\ui-lightness\images\ui-icons_ffd27a_256x240.png" />
     <Content Include="CSS\ui-lightness\images\ui-icons_ffffff_256x240.png" />
     <Content Include="CSS\ui-lightness\jquery-ui-1.10.3.custom.min.css" />
+    <Content Include="DashBoard\css\style.css" />
+    <Content Include="DashBoard\images\bg_data.png" />
+    <Content Include="DashBoard\images\bg_report.png" />
+    <Content Include="DashBoard\images\bg_top.png" />
+    <Content Include="DashBoard\images\bottom_line.png" />
+    <Content Include="DashBoard\images\center01.png" />
+    <Content Include="DashBoard\images\center02.png" />
+    <Content Include="DashBoard\images\hangye.png" />
+    <Content Include="DashBoard\images\icon01.png" />
+    <Content Include="DashBoard\images\icon02.png" />
+    <Content Include="DashBoard\images\icon03.png" />
+    <Content Include="DashBoard\images\icon04.png" />
+    <Content Include="DashBoard\images\icon05.png" />
+    <Content Include="DashBoard\images\icon06.png" />
+    <Content Include="DashBoard\images\line.png" />
+    <Content Include="DashBoard\images\new_list01.png" />
+    <Content Include="DashBoard\images\new_list02.png" />
+    <Content Include="DashBoard\images\report01.png" />
+    <Content Include="DashBoard\images\report02.png" />
+    <Content Include="DashBoard\images\zuo2.png" />
+    <Content Include="DashBoard\images\zuoyi.png" />
+    <Content Include="DashBoard\js\china.js" />
+    <Content Include="DashBoard\js\data.js" />
+    <Content Include="DashBoard\js\DTU.js" />
+    <Content Include="DashBoard\js\echarts.min.js" />
+    <Content Include="DashBoard\js\index.js" />
+    <Content Include="DashBoard\js\industry.js" />
+    <Content Include="DashBoard\js\jquery-1.8.0.min.js" />
+    <Content Include="DashBoard\js\jquery.min.js" />
+    <Content Include="DashBoard\js\map.js" />
+    <Content Include="DashBoard\js\online.js" />
+    <Content Include="DashBoard\js\PLC.js" />
+    <Content Include="DashBoard\js\times.js" />
+    <Content Include="DashBoard\js\vue.min.js" />
+    <Content Include="DashBoard\temp\angular.min.js" />
+    <Content Include="DashBoard\temp\echarts-gl.js" />
     <Content Include="Default.aspx" />
     <Content Include="ECharts\echarts.common.min.js" />
     <Content Include="ECharts\echarts.js" />
@@ -178,6 +215,7 @@
     <Content Include="JS\Report4FH.js" />
     <Content Include="JS\Report4.js" />
     <Content Include="JS\Report5.js" />
+    <Content Include="JS\Report4SN.js" />
     <Content Include="JS\Report6.js" />
     <Content Include="JS\Report7.js" />
     <Content Include="JS\Report8.js" />
@@ -200,11 +238,13 @@
     <Content Include="Report18.aspx" />
     <Content Include="Report19.aspx" />
     <Content Include="Report20.aspx" />
+    <Content Include="Report23.aspx" />
     <Content Include="Report21.aspx" />
     <Content Include="Report3.aspx" />
     <Content Include="Report4.aspx" />
     <Content Include="Report4FH.aspx" />
     <Content Include="Report5.aspx" />
+    <Content Include="Report4SN.aspx" />
     <Content Include="Report6.aspx" />
     <Content Include="Report7.aspx" />
     <Content Include="Report8.aspx" />
@@ -233,9 +273,11 @@
     <Content Include="ReportResource\telerik.kendoui\styles\kendo.default.mobile.min.css" />
     <Content Include="ReportTree.aspx" />
     <Content Include="JS\Report2.js" />
+    <Content Include="TestPage.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DashBoard\Entity\Alarm.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -335,6 +377,13 @@
     <Compile Include="Report20.aspx.designer.cs">
       <DependentUpon>Report20.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Report23.aspx.cs">
+      <DependentUpon>Report23.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Report23.aspx.designer.cs">
+      <DependentUpon>Report23.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Report21.aspx.cs">
       <DependentUpon>Report21.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -369,6 +418,13 @@
     </Compile>
     <Compile Include="Report5.aspx.designer.cs">
       <DependentUpon>Report5.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Report4SN.aspx.cs">
+      <DependentUpon>Report4SN.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Report4SN.aspx.designer.cs">
+      <DependentUpon>Report4SN.aspx</DependentUpon>
     </Compile>
     <Compile Include="Report6.aspx.cs">
       <DependentUpon>Report6.aspx</DependentUpon>

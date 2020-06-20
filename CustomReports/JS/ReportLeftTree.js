@@ -64,6 +64,10 @@ function navReport(projectID, reportID, target, typeid) {
             url = "Report21.aspx";
         if (reportID == 122)
             url = "Report4FH.aspx";
+        if (reportID == 123)
+            url = "Report23.aspx";
+        if (reportID == 124)
+            url = "Report4SN.aspx";
 
     }
 

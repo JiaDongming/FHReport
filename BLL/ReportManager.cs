@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 
 using DAL;
 using Models;
+using Common;
 
 namespace BLL
 {
@@ -1354,6 +1355,423 @@ namespace BLL
                 throw ex;
             }
             
+        }
+
+
+        #endregion
+
+        #region Report4SN （申能定制报表用-jiajie）
+
+        /// <summary>
+        /// 设置时间单位
+        /// </summary>
+        /// <returns></returns>
+        public string BindChoicesWithTime()
+        {
+            StringBuilder ChoiceHtml = new StringBuilder();
+            List<Report4SNTime> ProjectList = new List<Report4SNTime>();
+        
+            //加入空值
+            ProjectList.Insert(0, new Report4SNTime()
+            {
+                TimeID = null,
+                TimeName = ""
+
+            });
+
+            ChoiceHtml.AppendFormat("<option value=\"{0}\">{1}</option>", null, "");
+            
+            ChoiceHtml.AppendFormat("<option value=\"{0}\">{1}</option>", "0", "每天的");
+            ChoiceHtml.AppendFormat("<option value=\"{0}\">{1}</option>", "1", "每星期");
+            ChoiceHtml.AppendFormat("<option value=\"{0}\">{1}</option>", "2", "每月");
+            ChoiceHtml.AppendFormat("<option value=\"{0}\">{1}</option>", "3", "季度的");
+            ChoiceHtml.AppendFormat("<option value=\"{0}\">{1}</option>", "4", "每年");
+          
+            return ChoiceHtml.ToString();
+        }
+
+
+        public static string GetReport4SN_HTML(DateTime startDate, DateTime endDate, string multiSelectProjectChoice)
+        {
+            //获取报表数据（每一天，每个组织一行）
+            List<Report4SNRecord> reportDataList = GetReport4SN_Data(startDate,endDate,multiSelectProjectChoice);
+
+            List<Report4SNRecordGroup> newList = new List<Report4SNRecordGroup>();
+            List<string> newListFieldDates = new List<string>();
+            Dictionary<string, string> fieldDateDic = new Dictionary<string, string>();
+            //根据用户选择的重新组织数据
+            switch (multiSelectProjectChoice)
+            {
+                #region 按天
+                case "0"://按天
+                    
+                    {
+                        reportDataList.ForEach(x => 
+                        {
+                            if (newListFieldDates.Contains(x.FieldDate))
+                            {
+                                List<Report4SN> details = newList.FirstOrDefault(f => f.FieldDate == x.FieldDate).details;
+                                var detailSiteIds = details.Select(f => f.SiteID).Distinct().ToList();
+                                if (detailSiteIds.Contains(x.SiteID))
+                                {
+                                    details.FirstOrDefault(k => k.SiteID == x.SiteID).ItemNo = (Convert.ToInt32(details.FirstOrDefault(k => k.SiteID == x.SiteID).ItemNo) + Convert.ToInt32(x.ItemNo)).ToString();
+                                }
+                                else
+                                    details.Add(new Report4SN
+                                    {
+                                        SiteID = x.SiteID,
+                                        CategoryName = x.CategoryName,
+                                        ItemNo = x.ItemNo
+                                    });
+                            }
+                            else
+                            {
+                                newList.Add(new Report4SNRecordGroup
+                                {
+                                    FieldDate = x.FieldDate,
+                                    FieldDateName = x.FieldDate,
+                                    details = new List<Report4SN>()
+                                    {
+                                        new Report4SN
+                                        {
+                                             SiteID = x.SiteID,
+                                             CategoryName = x.CategoryName,
+                                             ItemNo = x.ItemNo
+                                        }
+                                    }
+
+                                });
+                                newListFieldDates.Add(x.FieldDate);
+                            }
+                               
+                        });
+                    }
+                    break;
+
+                #endregion
+                #region 按周
+                case "1"://按周
+                    {
+                        DateTime spliEndDate = startDate;
+                        int i = 1;
+                        while (spliEndDate < endDate)//组织起每个星期周期 xx|yy
+                        {
+                           
+                            spliEndDate = TimeTranslate.GetWeekLastDaySun(startDate);
+                            string fieldDate = String.Format("{0}|{1}", startDate.ToString("yyyy-MM-dd"), spliEndDate.ToString("yyyy-MM-dd"));
+                            int weekofMonth = TimeTranslate.WeekOfMonth(startDate, 1);
+                            string fieldDateName = String.Format("{0}月第{1}周", startDate.Month, weekofMonth);
+                            fieldDateDic.Add(fieldDate, fieldDateName);
+                           // newListFieldDates.Add(fieldDate);
+                            startDate = spliEndDate.AddDays(1);
+                            i++;
+                        }
+
+                        foreach (var item in fieldDateDic)
+                        {
+                            #region 初始化newList
+                            if (newList.FindIndex(f => f.FieldDate == item.Key) == -1)//不存在
+                            {
+                                newList.Add(new Report4SNRecordGroup
+                                {
+                                    FieldDate = item.Key,
+                                    FieldDateName = item.Value,
+                                    details = new List<Report4SN>()
+                                });
+                            }
+                            #endregion
+                        }
+
+                        reportDataList.ForEach(x =>
+                        {
+                            newList.ForEach(y => 
+                            {
+                                var currentStartTime =Convert.ToDateTime(y.FieldDate.Split('|')[0]) ;
+                                var currentEndTime = Convert.ToDateTime(y.FieldDate.Split('|')[1]);
+                                var recordDate= Convert.ToDateTime(x.FieldDate);
+                                if ( recordDate >= currentStartTime && recordDate<= currentEndTime)
+                                {
+                                  
+                                    var detailSiteIds = y.details.Select(f => f.SiteID).Distinct().ToList();
+                                    if (detailSiteIds.Contains(x.SiteID))
+                                    {
+                                        y.details.FirstOrDefault(k => k.SiteID == x.SiteID).ItemNo = (Convert.ToInt32(y.details.FirstOrDefault(k => k.SiteID == x.SiteID).ItemNo) + Convert.ToInt32(x.ItemNo)).ToString();
+                                    }
+                                    else
+                                        y.details.Add(new Report4SN
+                                        {
+                                            SiteID = x.SiteID,
+                                            CategoryName = x.CategoryName,
+                                            ItemNo = x.ItemNo
+                                        });
+                                }
+                            });
+                        });
+                    }
+                    break;
+                #endregion
+                #region 按月
+
+                case "2"://按月
+                    {
+                        DateTime spliEndDate = startDate;
+                        int i = 1;
+                        while (spliEndDate < endDate)//组织起每个月
+                        {
+
+                            spliEndDate = TimeTranslate.GetDateTimeMonthLastDay(startDate);
+                            string fieldDate = String.Format("{0}|{1}", startDate.ToString("yyyy-MM-dd"), spliEndDate.ToString("yyyy-MM-dd"));
+                            string fieldDateName = String.Format("{0}年{1}月", startDate.Year, startDate.Month);
+                            fieldDateDic.Add(fieldDate, fieldDateName);
+                            // newListFieldDates.Add(fieldDate);
+                            startDate = spliEndDate.AddDays(1);
+                            i++;
+                        }
+
+                        foreach (var item in fieldDateDic)
+                        {
+                            #region 初始化newList
+                            if (newList.FindIndex(f => f.FieldDate == item.Key) == -1)//不存在
+                            {
+                                newList.Add(new Report4SNRecordGroup
+                                {
+                                    FieldDate = item.Key,
+                                    FieldDateName = item.Value,
+                                    details = new List<Report4SN>()
+                                });
+                            }
+                            #endregion
+                        }
+
+                        reportDataList.ForEach(x =>
+                        {
+                            newList.ForEach(y =>
+                            {
+                                var currentStartTime = Convert.ToDateTime(y.FieldDate.Split('|')[0]);
+                                var currentEndTime = Convert.ToDateTime(y.FieldDate.Split('|')[1]);
+                                var recordDate = Convert.ToDateTime(x.FieldDate);
+                                if (recordDate >= currentStartTime && recordDate <= currentEndTime)
+                                {
+
+                                    var detailSiteIds = y.details.Select(f => f.SiteID).Distinct().ToList();
+                                    if (detailSiteIds.Contains(x.SiteID))
+                                    {
+                                        y.details.FirstOrDefault(k => k.SiteID == x.SiteID).ItemNo = (Convert.ToInt32(y.details.FirstOrDefault(k => k.SiteID == x.SiteID).ItemNo) + Convert.ToInt32(x.ItemNo)).ToString();
+                                    }
+                                    else
+                                        y.details.Add(new Report4SN
+                                        {
+                                            SiteID = x.SiteID,
+                                            CategoryName = x.CategoryName,
+                                            ItemNo = x.ItemNo
+                                        });
+                                }
+                            });
+                        });
+                    }
+                    break;
+                #endregion
+                #region 按季度
+                case "3"://按季度
+                    {
+                        DateTime spliEndDate = startDate;
+                        int i = 1;
+                        while (spliEndDate < endDate)//组织起每个季度
+                        {
+
+                            spliEndDate = TimeTranslate.GetDateTimeQuarterLastDay(startDate);
+                            string fieldDate = String.Format("{0}|{1}", startDate.ToString("yyyy-MM-dd"), spliEndDate.ToString("yyyy-MM-dd"));
+                            string fieldDateName = String.Format("{0}年{1}季度", startDate.Year, TimeTranslate.GetQuarterNum(startDate));
+                            fieldDateDic.Add(fieldDate, fieldDateName);
+                            // newListFieldDates.Add(fieldDate);
+                            startDate = spliEndDate.AddDays(1);
+                            i++;
+                        }
+
+                        foreach (var item in fieldDateDic)
+                        {
+                            #region 初始化newList
+                            if (newList.FindIndex(f => f.FieldDate == item.Key) == -1)//不存在
+                            {
+                                newList.Add(new Report4SNRecordGroup
+                                {
+                                    FieldDate = item.Key,
+                                    FieldDateName = item.Value,
+                                    details = new List<Report4SN>()
+                                });
+                            }
+                            #endregion
+                        }
+
+                        reportDataList.ForEach(x =>
+                        {
+                            newList.ForEach(y =>
+                            {
+                                var currentStartTime = Convert.ToDateTime(y.FieldDate.Split('|')[0]);
+                                var currentEndTime = Convert.ToDateTime(y.FieldDate.Split('|')[1]);
+                                var recordDate = Convert.ToDateTime(x.FieldDate);
+                                if (recordDate >= currentStartTime && recordDate <= currentEndTime)
+                                {
+
+                                    var detailSiteIds = y.details.Select(f => f.SiteID).Distinct().ToList();
+                                    if (detailSiteIds.Contains(x.SiteID))
+                                    {
+                                        y.details.FirstOrDefault(k => k.SiteID == x.SiteID).ItemNo = (Convert.ToInt32(y.details.FirstOrDefault(k => k.SiteID == x.SiteID).ItemNo) + Convert.ToInt32(x.ItemNo)).ToString();
+                                    }
+                                    else
+                                        y.details.Add(new Report4SN
+                                        {
+                                            SiteID = x.SiteID,
+                                            CategoryName = x.CategoryName,
+                                            ItemNo = x.ItemNo
+                                        });
+                                }
+                            });
+                        });
+                    }
+                    break;
+                #endregion
+                #region 按年
+                case "4"://按年
+                    {
+                        DateTime spliEndDate = startDate;
+                        int i = 1;
+                        while (spliEndDate < endDate)//组织起每个季度
+                        {
+                            
+                            spliEndDate = TimeTranslate.GetDateTimeYearLastDay(startDate);
+                            string fieldDate = String.Format("{0}|{1}", startDate.ToString("yyyy-MM-dd"), spliEndDate.ToString("yyyy-MM-dd"));
+                            string fieldDateName = String.Format("{0}年", startDate.Year);
+                            fieldDateDic.Add(fieldDate, fieldDateName);
+                            // newListFieldDates.Add(fieldDate);
+                            startDate = spliEndDate.AddDays(1);
+                            i++;
+                        }
+
+                        foreach (var item in fieldDateDic)
+                        {
+                            #region 初始化newList
+                            if (newList.FindIndex(f => f.FieldDate == item.Key) == -1)//不存在
+                            {
+                                newList.Add(new Report4SNRecordGroup
+                                {
+                                    FieldDate = item.Key,
+                                    FieldDateName = item.Value,
+                                    details = new List<Report4SN>()
+                                });
+                            }
+                            #endregion
+                        }
+
+                        reportDataList.ForEach(x =>
+                        {
+                            newList.ForEach(y =>
+                            {
+                                var currentStartTime = Convert.ToDateTime(y.FieldDate.Split('|')[0]);
+                                var currentEndTime = Convert.ToDateTime(y.FieldDate.Split('|')[1]);
+                                var recordDate = Convert.ToDateTime(x.FieldDate);
+                                if (recordDate >= currentStartTime && recordDate <= currentEndTime)
+                                {
+
+                                    var detailSiteIds = y.details.Select(f => f.SiteID).Distinct().ToList();
+                                    if (detailSiteIds.Contains(x.SiteID))
+                                    {
+                                        y.details.FirstOrDefault(k => k.SiteID == x.SiteID).ItemNo = (Convert.ToInt32(y.details.FirstOrDefault(k => k.SiteID == x.SiteID).ItemNo) + Convert.ToInt32(x.ItemNo)).ToString();
+                                    }
+                                    else
+                                        y.details.Add(new Report4SN
+                                        {
+                                            SiteID = x.SiteID,
+                                            CategoryName = x.CategoryName,
+                                            ItemNo = x.ItemNo
+                                        });
+                                }
+                            });
+                        });
+                    }
+                    break;
+                #endregion
+                default:
+                    break;
+            }
+            //组合HTML
+
+            if (reportDataList.Count == 0)
+                return String.Empty;
+            else
+            {
+                string strCharts = "[";
+              
+
+                foreach (Report4SNRecordGroup item in newList)
+                {
+                    strCharts += "{ \"name\" : \"" + item.FieldDateName + "\"," ;
+                    foreach (Report4SN detail in item.details)
+                    {
+                        // 申能股份
+                        if (detail.SiteID == "1" && detail.ItemNo != "0")
+                        {
+                            strCharts += " \"data2\" : " + detail.ItemNo+",";
+                        }
+                        else if (detail.SiteID == "2" && detail.ItemNo != "0")
+                        {
+                            strCharts += " \"data3\" : " + detail.ItemNo+ ",";
+                        }
+                        else if (detail.SiteID == "3" && detail.ItemNo != "0")
+                        {
+                            strCharts += " \"data1\" : " + detail.ItemNo+","; ;
+                        }
+                        
+                    }
+                    strCharts = strCharts.Substring(0, strCharts.Length - 1);
+                    strCharts += " },";
+                }
+               
+                strCharts = strCharts.Substring(0, strCharts.Length - 1);
+                strCharts += "]";
+
+                return strCharts;
+            }
+
+        }
+
+        private static List<Report4SNRecord> GetReport4SN_Data(DateTime startDate, DateTime endDate, string multiSelectProjectChoice)
+        {
+
+            //1. 获取sqldatareader
+            SqlDataReader objReader = null;
+            try
+            {
+                objReader = ReportService.GetReport4SN(startDate, endDate, multiSelectProjectChoice);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("调用报表GetReport4SN_Data数据访问方法GetReport14出错" + ex.Message);
+            }
+
+            //2. 定义泛型列表集合
+            List<Report4SNRecord> reportDataList = new List<Report4SNRecord>();
+
+            //3. 遍历sqldatareader，封装数据，插入到集合中
+            if (objReader != null)
+            {
+                while (objReader.Read())
+                {
+                    reportDataList.Add(new Report4SNRecord()
+                    {
+                        FieldDate = objReader["FieldDate1"].ToString(),
+                        SiteID = objReader["SiteID"].ToString(),
+                        CategoryName = objReader["Category"].ToString(),
+                        ItemNo = objReader["ItemNo"].ToString(),
+            
+                    });
+                }
+
+            }
+            objReader.Close();//关闭连接
+            return reportDataList;   //4. 返回数据
+            throw new NotImplementedException();
         }
 
 

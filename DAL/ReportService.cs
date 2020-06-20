@@ -905,5 +905,49 @@ namespace DAL
         }
 
         #endregion
+
+        #region
+        public static SqlDataReader GetReport4SN(DateTime startDate, DateTime endDate, string multiSelectProjectChoice)
+        {
+
+            //组合sql语句
+            StringBuilder sql = new StringBuilder();
+            sql.Append("select CONVERT(varchar(100), BugCustomFieldsData1.FieldDate1, 23) as FieldDate1,Customers.SiteID, CustomerSiteDeptGroups.SiteDeptGroupName as 'Category', count(*) as 'ItemNo'  from Bug");
+            sql.Append(" left join BugCustomFieldsData1 on (bug.BugID=BugCustomFieldsData1.BugID and bug.ProjectID=BugCustomFieldsData1.ProjectID)");
+            sql.Append("  left join Customers on (Bug.CustomerID=Customers.CustomerID)");
+            sql.Append(" left join CustomerSiteDeptGroups on Customers.SiteID=CustomerSiteDeptGroups.CustomerSiteDeptGroupID");
+            sql.Append(" where BugCustomFieldsData1.FieldDate1 >");
+            sql.Append("'"+@startDate.Date.ToString()+"'");
+            sql.Append(" and BugCustomFieldsData1.FieldDate1 <");
+            sql.Append("'"+@endDate.Date.ToString()+"'");
+            sql.Append(" and Bug.ProjectID=118");
+            sql.Append(" GROUP BY BugCustomFieldsData1.FieldDate1,Customers.SiteID,CustomerSiteDeptGroups.SiteDeptGroupName");
+            sql.Append(" order by BugCustomFieldsData1.FieldDate1");
+            //封装参数
+            SqlParameter[] param = new SqlParameter[]
+            {
+                new SqlParameter("@startDate",startDate.Date.ToString()),
+                 new SqlParameter("@endDate",endDate.Date.ToString()),
+            };
+
+            //执行获取
+
+            try
+            {
+                SqlDataReader objReader = SQLHelper.GetResultByReader(sql.ToString(), param);
+                return objReader;
+            }
+            catch (SqlException ex)
+            {
+
+                throw new Exception("执行SQLHelper.GetResultByReader出现数据库异常" + ex.Message); ;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        #endregion
     }
 }

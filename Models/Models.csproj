@@ -60,6 +60,7 @@
     <Compile Include="Report2_Project.cs" />
     <Compile Include="Report2_TaskInfo.cs" />
     <Compile Include="Report2_TaskType.cs" />
+    <Compile Include="Report4SN.cs" />
     <Compile Include="Report3.cs" />
     <Compile Include="Report4.cs" />
     <Compile Include="Report5.cs" />

@@ -77,6 +77,7 @@ function createChart(strCharts) {
         }],
         categoryAxis: {
             field: "name",                 // 设置纵轴数据读取的字段内容
+          
             majorGridLines: {
                 visible: true              // 设置是否显示网格线
             },
