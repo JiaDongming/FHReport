@@ -150,6 +150,12 @@
             });
         }
     </script>
+   <script>//解决导出pdf乱码问题
+    kendo.pdf.defineFont({
+        "DejaVu Sans": "ReportResource/telerik.kendoui/fonts/msyh.ttf"
+    });
+</script>
+
 </head>
 <body>
     <form id="form1" runat="server">
@@ -201,12 +207,16 @@
                                 <div class="globalHeaderLeft6">时间趋势</div>
                                 <div class="globalHeaderMiddle6">&nbsp;</div>
                                 <div style="padding-left:210px; padding-top:10px;">
-                                    <%--<asp:ImageButton  ImageAlign="Left" ImageUrl="Images/toExcel.gif" ID="btnExport" OnClick="exportReportToExcel" runat="server" ToolTip="导出Excel"  />--%>
+                                    <%--<asp:ImageButton  ImageAlign="Left" ImageUrl="Images/toExcel.gif" ID="btnSaveAsImage" runat="server"  ToolTip="导出"  />--%>
+                                    <img id="btnSaveAsImage" src="Images/PDF.png"  alt="导出pdf" />
                                 </div>
                             </div>
-                            <div id="divGlobalReportHTML6"><%=htmlGlobalReportTable6%></div>
-                            <div id="split"></div>
-                            <div id="divGlobalReportHTMLLine"><%=htmlGlobalReportTableLine%></div>
+                            <div id="group">
+                                <div id="divGlobalReportHTML6"><%=htmlGlobalReportTable6%></div>
+                                <div id="split"></div>
+                                <div id="divGlobalReportHTMLLine"><%=htmlGlobalReportTableLine%></div>
+                            </div>
+                           
                         </div>
                     </td>               
                 </tr>

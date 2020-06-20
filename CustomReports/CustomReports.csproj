@@ -184,6 +184,7 @@
     <Content Include="Images\mainBg.gif" />
     <Content Include="Images\middleBg.gif" />
     <Content Include="Images\normal.gif" />
+    <Content Include="Images\PDF.png" />
     <Content Include="Images\rightBg.gif" />
     <Content Include="Images\saveAsImage.gif" />
     <Content Include="Images\statusdelay.gif" />
@@ -257,6 +258,7 @@
     <Content Include="CSS\Default.css.exclude" />
     <Content Include="Images\Thumbs.db" />
     <None Include="Properties\PublishProfiles\CustomReport.pubxml" />
+    <Content Include="ReportResource\telerik.kendoui\fonts\msyh.ttf" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

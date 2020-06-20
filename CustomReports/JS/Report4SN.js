@@ -32,6 +32,36 @@ $(function () {
         }
     });
 
+    // 以图片形式导出报表
+    $("#btnSaveAsImage").click(function () {
+
+        //var chart = $("#divGlobalReportHTML6").getKendoChart();
+        //chart.exportPDF().done(function (data) {
+        //    kendo.saveAs({
+        //        dataURI: data,
+        //        fileName: "chart.pdf"
+        //    });
+        //});
+
+        kendo.drawing.drawDOM($("#group"))
+        .then(function (group) {
+            // Render the result as a PDF file
+            return kendo.drawing.exportPDF(group, {
+                paperSize: "auto",
+                margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+            });
+        })
+        .done(function (data) {
+            // Save the PDF file
+            kendo.saveAs({
+                dataURI: data,
+                fileName: new Date().toLocaleDateString()+".pdf"
+              
+            });
+        });
+
+    });
+
 });
 
 
@@ -71,8 +101,10 @@ function checkSearchCondition() {
 }
 
 
+
 function createChart(strCharts) {
     $("#divGlobalReportHTML6").kendoChart({
+        
         dataSource: {
             data: eval(strCharts)
         },
@@ -335,10 +367,6 @@ function doReportCall() {
                 //$("#divGlobalReportHTMLLine").ready(createChartLine(strCharts));
                 //$("#divGlobalReportHTMLLine").bind("kendo:skinChange", createChartLine(strCharts));
             }
-           
-           
-               
-              
             
 
         },
