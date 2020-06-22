@@ -1381,7 +1381,7 @@ namespace BLL
 
             ChoiceHtml.AppendFormat("<option value=\"{0}\">{1}</option>", null, "");
             
-            ChoiceHtml.AppendFormat("<option value=\"{0}\">{1}</option>", "0", "每天的");
+            ChoiceHtml.AppendFormat("<option selected=\"selected\" value=\"{0}\">{1}</option>", "0", "每天的");
             ChoiceHtml.AppendFormat("<option value=\"{0}\">{1}</option>", "1", "每星期");
             ChoiceHtml.AppendFormat("<option value=\"{0}\">{1}</option>", "2", "每月");
             ChoiceHtml.AppendFormat("<option value=\"{0}\">{1}</option>", "3", "季度的");

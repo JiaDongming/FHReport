@@ -8,6 +8,9 @@
      <meta http-equiv="content-type" content="text/html;chartset=UTF-8" /> 
         <link rel="stylesheet" href="CSS/ui-lightness/jquery-ui-1.10.3.custom.min.css" type="text/css" />
         <style type="text/css">
+        #group {
+               overflow: auto;
+            }
         #projectReport_6
         {
             /*border:1px solid green;*/

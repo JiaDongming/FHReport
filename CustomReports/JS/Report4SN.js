@@ -6,6 +6,7 @@ $(function () {
     {
         dateTimePickerValue = $("#dateTimePicker").val();
         dateTimePicker2Value = $("#dateTimePicker2").val();
+        doReportCall();
     }
 
     $("#dateTimePicker").change(function () {
@@ -185,7 +186,7 @@ function createChart(strCharts) {
             data: eval(strCharts)
         },
         chartArea: {
-            height: 400
+            height: 350
         },
         title: {
             text: "各组织工单数量图(线状图)"
@@ -264,7 +265,7 @@ function createChartLine(strCharts) {
             data: eval(strCharts)
         },
         chartArea: {
-            height: 400
+            height: 350
         },
         title: {
             text: "各组织工单数量图(线形图)"

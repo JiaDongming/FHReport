@@ -25,6 +25,7 @@ namespace CustomReports
                 //DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                 //DateTime endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                 DateTime startDate = TimeTranslate.GetWeekFirstDayMon(DateTime.Now);
+                //DateTime startDate = new DateTime(2020,05,22);
                 DateTime endDate = TimeTranslate.GetWeekLastDaySun(DateTime.Now);
                 dateTimePicker.Value = startDate.ToShortDateString();
                 dateTimePicker2.Value = endDate.ToShortDateString();
